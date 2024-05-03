@@ -5,6 +5,7 @@ const UserModel = require("../../database/models/UserModel");
 const { where } = require("sequelize");
 const bcrypt = require("bcrypt");
 const saltRounds = 10; 
+const AccessToken = require("../../services/auth/AccessToken")
 
 const AuthRouter = Router();
 
@@ -18,9 +19,12 @@ if (!email || !password) {
 
 try {
     const user = await UserModel.findOne({ where: { email } });
+
     //bcrypt.compareSync is used to compare the entered password with the stored hashed password.
     if (user && bcrypt.compareSync(password, user.password)) {
-    res.status(StatusCodes.OK).json({ user });
+        //jwt token creation
+        const newToken = AccessToken.createAccessToken(user.id);
+        res.status(StatusCodes.OK).json({ user, tokens:{ accessToken: newToken } });
     } else {
     res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);
     }
@@ -57,7 +61,7 @@ try {
     //check if email and username already exists
     const exitingEmail = await UserModel.findOne({ where: { email } });
     const exitingUsername = await UserModel.findOne({ where: { username } });
-    
+
     if (exitingEmail) {
     res.status(StatusCodes.CONFLICT).send("Email already exists");
     return;
@@ -72,7 +76,11 @@ try {
     password: hashedPassword,
     email,
     });
-    res.status(StatusCodes.CREATED).json({ user: newUser });
+    
+    //token generation
+    const newToken = AccessToken.createAccessToken(newUser.id);
+
+    res.status(StatusCodes.CREATED).json({ user: newUser, tokens: { accessToken: newToken } });
 } catch (e) {
     console.log("Error occured creating user", e);
 }
