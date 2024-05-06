@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {Button} from "@nextui-org/react";
+import UserContext from '../../../contexts/user-context/UserContext';
 
 function Signup() {
+  
+  const { dataSignUpUser } = useContext(UserContext);
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -13,16 +17,22 @@ function Signup() {
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    // Here you can handle the form submission, e.g., send data to the server for authentication
-    console.log('Form submitted:', formData);
-    // Reset form fields after submission
-    setFormData({
-      username: '',
-      password: '',
-      email: ''
-    });
+    try{
+      const response = await dataSignUpUser(formData.username, formData.password, formData.email);
+
+      console.log('Form submitted:', response);
+      // Reset form fields after submission
+      setFormData({
+        username: '',
+        password: '',
+        email: ''
+      });
+    }catch(e){
+      console.log("Signup failed",e)
+    }
+    
   };
 
   return (
@@ -36,7 +46,7 @@ function Signup() {
             className="appearance-none block w-full bg-gray-50 text-black border border-gray-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
             type="text"
             placeholder="Enter a username"
-            name="firstName"
+            name="username"
             value={formData.username}
             onChange={handleChange}
           />
@@ -68,8 +78,8 @@ function Signup() {
           />
         </div>
       </div>
-      <div className="flex justify-center">
-        <Button type="submit" className="bg-lime-700 m-4 p-2 text-white text-center ">
+      <div className="flex justify-center mt-4">
+        <Button type="submit" className="bg-lime-700 text-white rounded text-center px-6 py-1">
             <span>SignUp </span>
         </Button>  
       </div>

@@ -19,6 +19,26 @@ async function currentLoginUser(email, password){
     return { user, accessToken };
 }
 
+async function signUpUser(username, password, email){
+
+    const result = await api.post("/auth/signup",{
+        username:username,
+        password: password,
+        email: email
+    },{
+        headers: {
+            'Content-Type': 'application/json' // Set Content-Type to JSON
+        }
+    } 
+    );
+    console.log("RESULT SIGNUPUSER",result.data);
+
+    const { user, tokens } = result.data;
+    const accessToken = tokens.accessToken;
+    saveAccessTokens(accessToken);
+    return { user, accessToken };
+}
+
 
 async function verifyAccessToken(accessToken) {
     try {
@@ -34,4 +54,4 @@ async function verifyAccessToken(accessToken) {
     }
 }
 
-export default { currentLoginUser, verifyAccessToken };
+export default { currentLoginUser, verifyAccessToken, signUpUser};

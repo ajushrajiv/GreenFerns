@@ -23,17 +23,38 @@ export const UserProvider = ({children}) => {
         }
     };
 
+    async function dataSignUpUser (username, password, email) {
+      try {
+          const{ user, accessToken } = await AuthMutations.signUpUser(username, password, email);
+          setUser(user);
+          console.log("SignUp successful from user context",user.username);
+          console.log("SignUp successful from user context ACCESS TOKEN",accessToken);
+          validateUser(accessToken);
+          return user;
+      } catch (error) {
+          console.error("SignUp failed", error);
+          throw error; 
+      }
+  };
+
     async function loadCurrentUser() {
+      try{
         const result = await UserQueries.currentUser();
     
         if (result.user) {
           setUser(result.user);
         }
+      }catch(e){
+        if(e.response.status === 403){
+          logOutUser();
+        }
+        console.log("Error from loadCurrentUser", e.response)
       }
-    
-      useEffect(() => {
-        loadCurrentUser();
-      }, []);
+    }
+  
+    useEffect(() => {
+      loadCurrentUser();
+    }, []);
     
     function validateUser(accessToken){
         const storedAccessToken = getAccessToken();
@@ -55,8 +76,7 @@ export const UserProvider = ({children}) => {
     };
 
     return (
-        <UserContext.Provider value={{ user, loginUser, logOutUser }}>
-            {console.log("Print the chilllllllllllllllllldren", user)}
+        <UserContext.Provider value={{ user, loginUser, logOutUser, dataSignUpUser }}>
           {children}
         </UserContext.Provider>
       );

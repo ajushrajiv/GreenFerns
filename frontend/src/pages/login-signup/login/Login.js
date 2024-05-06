@@ -69,8 +69,8 @@ function Login() {
             </Link>
         </p>
       </div>
-      <div className="flex justify-center">
-        <Button type="submit" className="bg-lime-700 m-2 p-2 text-white text-center ">
+      <div className="flex justify-center mt-4">
+        <Button type="submit" className="bg-lime-700 text-white rounded text-center px-6 py-1">
             <span>Login </span>
         </Button>  
       </div>

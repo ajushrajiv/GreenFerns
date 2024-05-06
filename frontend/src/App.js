@@ -9,6 +9,7 @@ import ShoppingCart from './pages/shopping-cart/ShoppingCart';
 import Login from './pages/login-signup/login';
 import Signup from './pages/login-signup/signup';
 import Profile from './pages/login-signup/profile';
+import Home from './pages/home';
 
 function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -43,7 +44,8 @@ function App() {
           
           <div className="px-4 md:px-8 lg:px-32 flex-grow">
             <Routes>
-              <Route path="/login" element={<Login currentCategory="Login"/>} />
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/:category" element={<PlantGrid  />} />
