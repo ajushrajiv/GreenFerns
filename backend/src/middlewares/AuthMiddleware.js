@@ -1,5 +1,6 @@
 const { StatusCodes, ReasonPhrases } = require("http-status-codes");
 const AccessToken = require("../services/auth/AccessToken");
+const logger = require("../services/logger/Logger")
 
 function authMiddleWare(req, res, next) {
   const token = req.headers["x-access-token"];

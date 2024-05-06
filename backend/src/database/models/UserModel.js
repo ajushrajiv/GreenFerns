@@ -25,7 +25,13 @@ const UserModel = userSequelize.define(
     },
     
   },
-  { tableName: "User_tb" }
+  { 
+    tableName: "User_tb",
+    defaultScope: { attributes: { exclude:["password"] } },
+    scopes: {
+      allData: { attributes: { exclude: [] } },
+    }
+  }
 );
 
 module.exports = UserModel;

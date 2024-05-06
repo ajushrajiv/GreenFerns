@@ -18,11 +18,12 @@ if (!email || !password) {
 }
 
 try {
-    const user = await UserModel.findOne({ where: { email } });
+    const user = await UserModel.scope("allData").findOne({ where: { email } });
 
     //bcrypt.compareSync is used to compare the entered password with the stored hashed password.
     if (user && bcrypt.compareSync(password, user.password)) {
         //jwt token creation
+        user.password = null
         const newToken = AccessToken.createAccessToken(user.id);
         res.status(StatusCodes.OK).json({ user, tokens:{ accessToken: newToken } });
     } else {
@@ -76,7 +77,7 @@ try {
     password: hashedPassword,
     email,
     });
-    
+    newUser.password = null;
     //token generation
     const newToken = AccessToken.createAccessToken(newUser.id);
 
