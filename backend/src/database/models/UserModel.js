@@ -23,7 +23,10 @@ const UserModel = userSequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    
+    profileImgUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   { 
     tableName: "User_tb",

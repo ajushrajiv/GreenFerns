@@ -38,7 +38,11 @@ const PlantModel = GreenFernsSequelize.define(
     plantSummary: {
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    plantImgUrl: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   { tableName: "plant_tb" }
 );
