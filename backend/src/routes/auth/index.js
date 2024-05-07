@@ -39,14 +39,14 @@ AuthRouter.post("/signup", async (req, res) => {
 const { username, password, email } = req.body;
 
 if (!username || !password || !email) {
-    res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST);
+    res.status(StatusCodes.BAD_REQUEST).json({ error: "Missing fields" });
     return;
 }
 
 // Check if the email is in correct format
 const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
 if (!emailRegex.test(email)) {
-    res.status(StatusCodes.BAD_REQUEST).send("Invalid email format");
+    res.status(StatusCodes.BAD_REQUEST).json({error:"Invalid email format"});
     return;
 }
 
@@ -54,7 +54,7 @@ if (!emailRegex.test(email)) {
 if (!isNaN(username[0])) {
     res
     .status(StatusCodes.BAD_REQUEST)
-    .send("Username should not start with a number");
+    .json({error:"Username should not start with a number"});
     return;
 }
 
@@ -64,10 +64,10 @@ try {
     const exitingUsername = await UserModel.findOne({ where: { username } });
 
     if (exitingEmail) {
-    res.status(StatusCodes.CONFLICT).send("Email already exists");
+    res.status(StatusCodes.CONFLICT).json({ error:"Email already exists"});
     return;
     } else if (exitingUsername) {
-    res.status(StatusCodes.CONFLICT).send("Username already exists");
+    res.status(StatusCodes.CONFLICT).json({error: "Username already exists"});
     return;
     }
 
@@ -83,7 +83,8 @@ try {
 
     res.status(StatusCodes.CREATED).json({ user: newUser, tokens: { accessToken: newToken } });
 } catch (e) {
-    console.log("Error occured creating user", e);
+    console.error("Error occurred creating user", e);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: "Internal server error" });
 }
 });
 
